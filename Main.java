@@ -1,71 +1,42 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+// import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        // Define o conjunto de números
-        int[] conjunto = new Conjunto().conjunto_1000();
 
-        
-        System.out.println("Conjunto inicial de " + conjunto.length + " elementos: \"" + java.util.Arrays.toString(conjunto));
+        Conjunto gerador = new Conjunto();
+        int[] conjunto = gerador.conjunto_5();
+        System.out.println("Conjunto de 5 elementos: " + Arrays.toString(conjunto));
 
-        // Registra o tempo inicial
-        long startTime = System.nanoTime();
-        System.out.println("Tempo inicial: " + startTime);
-
-        // Chama a função para encontrar um subconjunto que soma zero
-        List<Integer> subconjunto = encontraSubconjuntoSomaZero(conjunto);
-
-        // Registra o tempo final
-        long endTime = System.nanoTime();
-        System.out.println("Tempo final: " + endTime);
-
-        // Se um subconjunto foi encontrado, imprime o subconjunto
-        if (subconjunto != null) {
-            System.out.println("Subconjunto com soma zero encontrado: " + subconjunto);
+        if (existeSubconjuntoSomaZero(conjunto)) {
+            System.out.println("Existe um subconjunto nao vazio cuja soma é zero.");
         } else {
-            // Se nenhum subconjunto foi encontrado, imprime uma mensagem
-            System.out.println("Nenhum subconjunto encontrado.");
+            System.out.println("Nao existe um subconjunto nao vazio cuja soma seja zero.");
         }
-
-        // Calcula a duração da execução e imprime
-        long duration = (endTime - startTime);  // tempo de execução em nanossegundos
-        System.out.println("Tempo de execução: " + duration + " nanossegundos");
     }
 
-    public static List<Integer> encontraSubconjuntoSomaZero(int[] conjunto) {
-        // Obtém o número de elementos no conjunto
+    public static boolean existeSubconjuntoSomaZero(int[] conjunto) {
         int n = conjunto.length;
-        System.out.println("Número de elementos no conjunto: " + n);
 
-        // Inicializa a variável que irá armazenar o subconjunto correto
-        List<Integer> subconjuntoCorreto = null;
-
-        // Gera todos os possíveis subconjuntos do conjunto
-        for (int i = 0; i < (1 << n); i++) {
-            // Inicializa um novo subconjunto e a soma dos seus elementos
-            List<Integer> sub = new ArrayList<>();
+        // O valor de i representa cada subconjunto diferente, onde o número em binário com 0 e 1, onde a posição do 1 indica quem estará no subconjunto
+        for (int i = 1; i < (1 << n); i++) { // Percorre de 1 até 2^n - 1-> se n é 5, teremos 100000 = 2^5 = 32 
             int soma = 0;
 
-            // Para cada elemento no conjunto, verifica se ele pertence ao subconjunto atual
+            
             for (int j = 0; j < n; j++) {
-                // Se o elemento pertence ao subconjunto, adiciona ele ao subconjunto e atualiza a soma
-                if ((i & (1 << j)) != 0) {
-                    sub.add(conjunto[j]);
+                if ((i & (1 << j)) > 0) { // Verifica se o j-ésimo elemento está no subconjunto -> Operação de Bitwise
                     soma += conjunto[j];
                 }
             }
 
-            System.out.println("Subconjunto atual: " + sub + ", soma: " + soma);
-
-            // Se a soma dos elementos do subconjunto é zero, atualiza o subconjunto correto
+            // Se a soma for zero, já encontramos um subconjunto válido
             if (soma == 0) {
-                subconjuntoCorreto = sub;
-                System.out.println("Subconjunto com soma zero encontrado: " + subconjuntoCorreto);
+                return true;
             }
         }
 
-        // Retorna o subconjunto correto
-        return subconjuntoCorreto;
+        // Se nenhum subconjunto com soma zero foi encontrado
+        return false;
     }
 }
+
