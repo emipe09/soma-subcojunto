@@ -1,42 +1,75 @@
+import java.util.ArrayList;
 import java.util.Arrays;
-// import java.util.List;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        // Define o conjunto de números
+        int[] conjunto = new Conjunto().conjunto_30();
+        
+        System.out.println("Conjunto inicial de " + conjunto.length + " elementos: \"" + java.util.Arrays.toString(conjunto) + "\"");
 
-        Conjunto gerador = new Conjunto();
-        int[] conjunto = gerador.conjunto_5();
-        System.out.println("Conjunto de 5 elementos: " + Arrays.toString(conjunto));
+        // Registra o tempo inicial
+        long startTime = System.nanoTime();
 
-        if (existeSubconjuntoSomaZero(conjunto)) {
-            System.out.println("Existe um subconjunto nao vazio cuja soma é zero.");
+        // Chama a função para encontrar um subconjunto que soma zero
+        List<Integer> subconjunto = encontraSubconjuntoSomaZero(conjunto);
+
+        // Registra o tempo final
+        long endTime = System.nanoTime();
+
+        // Se um subconjunto foi encontrado, imprime o subconjunto
+        if (subconjunto != null) {
+            System.out.println("Subconjunto com soma zero encontrado: " + subconjunto);
         } else {
-            System.out.println("Nao existe um subconjunto nao vazio cuja soma seja zero.");
+            // Se nenhum subconjunto foi encontrado, imprime uma mensagem
+            System.out.println("Nenhum subconjunto encontrado.");
         }
+
+        // Calcula a duração da execução em segundos
+        double durationInSeconds = (endTime - startTime) / 1_000_000_000.0;
+        System.out.println("Tempo de execução: " + durationInSeconds + " segundos");
     }
 
-    public static boolean existeSubconjuntoSomaZero(int[] conjunto) {
+    public static List<Integer> encontraSubconjuntoSomaZero(int[] conjunto) {
         int n = conjunto.length;
-
-        // O valor de i representa cada subconjunto diferente, onde o número em binário com 0 e 1, onde a posição do 1 indica quem estará no subconjunto
-        for (int i = 1; i < (1 << n); i++) { // Percorre de 1 até 2^n - 1-> se n é 5, teremos 100000 = 2^5 = 32 
+        System.out.println("Número de elementos no conjunto: " + n);
+    
+        // Inicializa a variável que irá armazenar o subconjunto correto
+        List<Integer> subconjuntoCorreto = null;
+    
+        // Chama a função auxiliar para gerar subconjuntos e verificar soma
+        subconjuntoCorreto = gerarSubconjuntosEVerificarSoma(conjunto, new ArrayList<>());
+    
+        return subconjuntoCorreto;
+    }
+    
+    public static List<Integer> gerarSubconjuntosEVerificarSoma(int[] conjunto, List<Integer> currentSubconjunto) {
+        if (conjunto.length == 0) {
+            // Se o conjunto estiver vazio, verifica se a soma do subconjunto atual é zero
             int soma = 0;
-
-            
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) > 0) { // Verifica se o j-ésimo elemento está no subconjunto -> Operação de Bitwise
-                    soma += conjunto[j];
-                }
+            for (int num : currentSubconjunto) {
+                soma += num;
             }
-
-            // Se a soma for zero, já encontramos um subconjunto válido
-            if (soma == 0) {
-                return true;
+            if (!currentSubconjunto.isEmpty() && soma == 0) {
+                return currentSubconjunto;
             }
+            return null;
         }
-
-        // Se nenhum subconjunto com soma zero foi encontrado
-        return false;
+    
+        // Pega o primeiro elemento do conjunto
+        int num = conjunto[0];
+    
+        // Cria um novo subconjunto com o elemento atual
+        List<Integer> novoSubconjunto = new ArrayList<>(currentSubconjunto);
+        novoSubconjunto.add(num);
+    
+        // Recursivamente gera subconjuntos com e sem o elemento atual
+        List<Integer> subconjuntoCorreto = gerarSubconjuntosEVerificarSoma(Arrays.copyOfRange(conjunto, 1, conjunto.length), novoSubconjunto);
+        if (subconjuntoCorreto != null) {
+            return subconjuntoCorreto;
+        }
+    
+        return gerarSubconjuntosEVerificarSoma(Arrays.copyOfRange(conjunto, 1, conjunto.length), currentSubconjunto);
     }
 }
-
