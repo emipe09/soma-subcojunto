@@ -1,13 +1,29 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class Main {
     public static void main(String[] args) {
-        // Define o conjunto de números
-        int[] conjunto = new Conjunto().conjunto_30();
-        
-        System.out.println("Conjunto inicial de " + conjunto.length + " elementos: \"" + java.util.Arrays.toString(conjunto) + "\"");
+
+        Conjunto gerando = new Conjunto();
+        gerando.conjunto_arbitrario();
+
+
+
+        // Read the file
+        List<Integer> conjunto = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("conjunto_arbitrario.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                conjunto.add(Integer.parseInt(line));
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao ler arquivo: " + e.getMessage());
+        }
+
+        System.out.println("Conjunto inicial de " + conjunto.size() + " elementos: \"" + conjunto + "\"");
 
         // Registra o tempo inicial
         long startTime = System.nanoTime();
@@ -31,22 +47,20 @@ public class Main {
         System.out.println("Tempo de execução: " + durationInSeconds + " segundos");
     }
 
-    public static List<Integer> encontraSubconjuntoSomaZero(int[] conjunto) {
-        int n = conjunto.length;
-        System.out.println("Número de elementos no conjunto: " + n);
-    
+    public static List<Integer> encontraSubconjuntoSomaZero(List<Integer> conjunto) {
+        System.out.println("Número de elementos no conjunto: " + conjunto.size());
+
         // Inicializa a variável que irá armazenar o subconjunto correto
         List<Integer> subconjuntoCorreto = null;
-    
+
         // Chama a função auxiliar para gerar subconjuntos e verificar soma
         subconjuntoCorreto = gerarSubconjuntosEVerificarSoma(conjunto, new ArrayList<>());
-    
+
         return subconjuntoCorreto;
     }
-    
-    public static List<Integer> gerarSubconjuntosEVerificarSoma(int[] conjunto, List<Integer> currentSubconjunto) {
-        if (conjunto.length == 0) {
-            // Se o conjunto estiver vazio, verifica se a soma do subconjunto atual é zero
+
+    public static List<Integer> gerarSubconjuntosEVerificarSoma(List<Integer> conjunto, List<Integer> currentSubconjunto) {
+        if (conjunto.isEmpty()) {
             int soma = 0;
             for (int num : currentSubconjunto) {
                 soma += num;
@@ -56,20 +70,20 @@ public class Main {
             }
             return null;
         }
-    
+
         // Pega o primeiro elemento do conjunto
-        int num = conjunto[0];
-    
+        int num = conjunto.get(0);
+
         // Cria um novo subconjunto com o elemento atual
         List<Integer> novoSubconjunto = new ArrayList<>(currentSubconjunto);
         novoSubconjunto.add(num);
-    
+
         // Recursivamente gera subconjuntos com e sem o elemento atual
-        List<Integer> subconjuntoCorreto = gerarSubconjuntosEVerificarSoma(Arrays.copyOfRange(conjunto, 1, conjunto.length), novoSubconjunto);
+        List<Integer> subconjuntoCorreto = gerarSubconjuntosEVerificarSoma(conjunto.subList(1, conjunto.size()), novoSubconjunto);
         if (subconjuntoCorreto != null) {
             return subconjuntoCorreto;
         }
-    
-        return gerarSubconjuntosEVerificarSoma(Arrays.copyOfRange(conjunto, 1, conjunto.length), currentSubconjunto);
+
+        return gerarSubconjuntosEVerificarSoma(conjunto.subList(1, conjunto.size()), currentSubconjunto);
     }
 }

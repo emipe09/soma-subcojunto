@@ -1,9 +1,13 @@
 import java.util.Random;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class Conjunto {
 
     Random random = new Random();
 
+    //impossibilita o numero 0, para gerar instancias que sejam mais coerentes
     private int generateNonZeroRandom(int bound, int offset) {
         int value;
         do {
@@ -12,75 +16,27 @@ public class Conjunto {
         return value;
     }
 
-    public int[] conjunto_5() {
-        int[] conjunto = new int[5];
-        for (int i = 0; i < 5; i++) {
-            conjunto[i] = generateNonZeroRandom(1000, -15);
+    //escreve o conjunto em um arquivo
+    private void writeConjuntoToFile(int[] conjunto, String filename) {
+        try (FileWriter writer = new FileWriter(filename + ".txt")) {
+            for (int value : conjunto) {
+                writer.write(value + "\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao escrever arquivo: " + e.getMessage());
         }
-        return conjunto;
     }
 
-    public int[] conjunto_10() {
-        int[] conjunto = new int[10];
-        for (int i = 0; i < 10; i++) {
+    public void conjunto_arbitrario(){
+        // gerando uma instancia de tamanho entre 5 e 35 para a resoluação do problema
+        int tamanho = random.nextInt(5,35);
+        int[] conjunto = new int[tamanho];
+        for (int i = 0; i < tamanho; i++) {
             conjunto[i] = generateNonZeroRandom(100, -15);
         }
-        return conjunto;
+        writeConjuntoToFile(conjunto, "conjunto_arbitrario");
     }
 
-    public int[] conjunto_20() {
-        int[] conjunto = new int[20];
-        for (int i = 0; i < 20; i++) {
-            conjunto[i] = generateNonZeroRandom(100, -15);
-        }
-        return conjunto;
-    }
 
-    public int[] conjunto_25() {
-        int[] conjunto = new int[25];
-        for (int i = 0; i < 25; i++) {
-            conjunto[i] = generateNonZeroRandom(100, -15);
-        }
-        return conjunto;
-    }
 
-    public int[] conjunto_30() {
-        int[] conjunto = new int[30];
-        for (int i = 0; i < 30; i++) {
-            conjunto[i] = generateNonZeroRandom(100, -15);
-        }
-        return conjunto;
-    }
-
-    public int[] conjunto_50() {
-        int[] conjunto = new int[50];
-        for (int i = 0; i < 50; i++) {
-            conjunto[i] = generateNonZeroRandom(100, -15);
-        }
-        return conjunto;
-    }
-
-    public int[] conjunto_100() {
-        int[] conjunto = new int[100];
-        for (int i = 0; i < 100; i++) {
-            conjunto[i] = generateNonZeroRandom(100, -15);
-        }
-        return conjunto;
-    }
-
-    public int[] conjunto_500() {
-        int[] conjunto = new int[500];
-        for (int i = 0; i < 500; i++) {
-            conjunto[i] = generateNonZeroRandom(100, -15);
-        }
-        return conjunto;
-    }
-
-    public int[] conjunto_1000() {
-        int[] conjunto = new int[1000];
-        for (int i = 0; i < 1000; i++) {
-            conjunto[i] = generateNonZeroRandom(100, -15);
-        }
-        return conjunto;
-    }
 }
